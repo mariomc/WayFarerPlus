@@ -6,6 +6,19 @@ if (settings["accIngress"] && settings["accPoGo"])
     document.addEventListener("WFPNomSelected", updateNomTypeButtons, false);
 
 
+const colorMap = {
+    "ACCEPTED": "green",
+    "NOMINATED": "orange",
+    "WITHDRAWN": "yellow",
+    "REJECTED": "red",
+};
+
+
+
+function getIconUrl(nomination) {
+    return `http://maps.google.com/mapfiles/ms/icons/${colorMap[nomination.status] || 'red'}-dot.png`;
+}
+
 function addMap(nominationList, mapElement) {
     const gmap = new google.maps.Map(mapElement, {
         center: {lat: -34.397, lng: 150.644},
@@ -14,7 +27,7 @@ function addMap(nominationList, mapElement) {
     
     const bounds = new google.maps.LatLngBounds();
     const markers = nominationList.map((nomination) => {
-        const latLng = {
+            const latLng = {
             lat: nomination.lat,
             lng: nomination.lng
         };
@@ -22,7 +35,14 @@ function addMap(nominationList, mapElement) {
             map: gmap,
             position: latLng,
             title: nomination.title,
-            label: "L"
+            icon: {
+                url: getIconUrl(nomination)
+            }
+        });
+
+        marker.addListener('click', () => {
+            nomCtrl.showNominationDetail(nomination);
+            selectNomination();
         });
         bounds.extend(latLng);
         return marker;
