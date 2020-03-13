@@ -5,11 +5,38 @@ document.addEventListener("WFPNomCtrlHooked", loadStats);
 if (settings["accIngress"] && settings["accPoGo"])
     document.addEventListener("WFPNomSelected", updateNomTypeButtons, false);
 
+
+function addMap(nominationList, mapElement) {
+    const gmap = new google.maps.Map(mapElement, {
+        center: {lat: -34.397, lng: 150.644},
+        zoom: 8
+      });
+    
+    const bounds = new google.maps.LatLngBounds();
+    const markers = nominationList.map((nomination) => {
+        const latLng = {
+            lat: nomination.lat,
+            lng: nomination.lng
+        };
+        const marker =  new google.maps.Marker({
+            map: gmap,
+            position: latLng,
+            title: nomination.title,
+            label: "L"
+        });
+        bounds.extend(latLng);
+        return marker;
+    });
+    gmap.fitBounds(bounds);
+} 
+
 function loadStats(){
     if (!nomCtrl.loaded){
         setTimeout(loadStats, 100);
         return;
     }
+
+    addMap(nomCtrl.nomList, document.getElementById('nomination-map'))
 
     var elem = document.getElementById("nomStats");
 
