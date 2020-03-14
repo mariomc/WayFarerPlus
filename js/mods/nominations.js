@@ -11,6 +11,11 @@ function modNominationPage(settings){
 		addStats();
 		addPageJS("nominations/statsWidget.js");
 	}
+
+	if (settings["nominationMap"]) {
+		addPageJS("nominations/nominationMap.js");
+	}
+
 	if (settings["nomStreetView"]){
 		addStreetView();
 		addPageJS("nominations/streetView.js");
@@ -131,15 +136,9 @@ function addStats(){
 
 	collapsibleContent.appendChild(contentInner);
 
-	var map = document.createElement("div");
-	map.setAttribute("class", "nomination-map");
-	map.id = "nomination-map";
-	map.innerText = "Loading...";
-
 	container.appendChild(collapsibleInput);
 	container.appendChild(collapsibleLabel);
 	container.appendChild(collapsibleContent);
-	container.appendChild(map);
 
 	var elem = document.getElementsByTagName("section")[0];
 	elem.insertBefore(container, elem.children[0]);
